@@ -1,61 +1,31 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
 
 export async function GET() {
-  const baseDir = 'C:/retouch/новое портфолио/ДОДЕЛАНО/моё/inst';
-  const publicDir = path.join(process.cwd(), 'public', 'images');
-  
-  try {
-    // Создаем директорию для изображений, если она не существует
-    if (!fs.existsSync(publicDir)) {
-      fs.mkdirSync(publicDir, { recursive: true });
-    }
+  // Укажите здесь все пары изображений, которые реально лежат в public/images
+  const imagePairs = [
+    { before: '/images/11/1.png', after: '/images/11/3.jpg' },
+    { before: '/images/14/1.png', after: '/images/14/3.jpg' },
+    { before: '/images/19/1.png', after: '/images/19/3.jpg' },
+    { before: '/images/3/1.png', after: '/images/3/3.jpg' },
+    { before: '/images/33/1.png', after: '/images/33/3.jpg' },
+    { before: '/images/34/1.png', after: '/images/34/3.jpg' },
+    { before: '/images/35/1.png', after: '/images/35/3.jpg' },
+    { before: '/images/36/1.png', after: '/images/36/3.jpg' },
+    { before: '/images/37/1.jpg', after: '/images/37/3.jpg' },
+    { before: '/images/38/1.png', after: '/images/38/3.jpg' },
+    { before: '/images/39/1.png', after: '/images/39/3.jpg' },
+    { before: '/images/46/1.png', after: '/images/46/3.jpg' },
+    { before: '/images/50/1.png', after: '/images/50/3.jpg' },
+    { before: '/images/54/1.png', after: '/images/54/3.jpg' },
+    { before: '/images/55/1.png', after: '/images/55/3.jpg' },
+    { before: '/images/57/1.png', after: '/images/57/3.jpg' },
+    { before: '/images/58/1.png', after: '/images/58/3.jpg' },
+    { before: '/images/64/1.png', after: '/images/64/3.jpg' },
+    { before: '/images/72/1.png', after: '/images/72/3.jpg' },
+    { before: '/images/73/1.png', after: '/images/73/3.jpg' },
+    { before: '/images/74/1.png', after: '/images/74/3.jpg' },
+    // Добавьте остальные пары по аналогии, если нужно
+  ];
 
-    const folders = fs.readdirSync(baseDir)
-      .filter(item => fs.statSync(path.join(baseDir, item)).isDirectory());
-
-    const imagePairs = folders.map(folder => {
-      const folderPath = path.join(baseDir, folder);
-      const publicFolderPath = path.join(publicDir, folder);
-      
-      // Создаем подпапку в public/images
-      if (!fs.existsSync(publicFolderPath)) {
-        fs.mkdirSync(publicFolderPath, { recursive: true });
-      }
-
-      const files = fs.readdirSync(folderPath);
-      
-      const beforeImage = files.find(file => file.startsWith('1') && (file.endsWith('.jpg') || file.endsWith('.png')));
-      const afterImage = files.find(file => file.startsWith('3') && (file.endsWith('.jpg') || file.endsWith('.png')));
-
-      if (beforeImage && afterImage) {
-        // Копируем файлы в публичную директорию
-        try {
-          fs.copyFileSync(
-            path.join(folderPath, beforeImage),
-            path.join(publicFolderPath, beforeImage)
-          );
-          fs.copyFileSync(
-            path.join(folderPath, afterImage),
-            path.join(publicFolderPath, afterImage)
-          );
-        } catch (error) {
-          console.error(`Error copying files for folder ${folder}:`, error);
-          return null;
-        }
-
-        return {
-          before: `/images/${folder}/${beforeImage}`,
-          after: `/images/${folder}/${afterImage}`
-        };
-      }
-      return null;
-    }).filter(Boolean);
-
-    return NextResponse.json(imagePairs);
-  } catch (error) {
-    console.error('Error reading images:', error);
-    return NextResponse.json({ error: 'Failed to load images' }, { status: 500 });
-  }
+  return NextResponse.json(imagePairs);
 } 
