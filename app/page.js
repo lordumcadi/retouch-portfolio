@@ -3,15 +3,20 @@
 import { useState, useEffect } from 'react';
 
 function FadeInImage({ src, alt, className, style }) {
-  const [loaded, setLoaded] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   return (
-    <div className={`w-full h-full bg-gray-700 animate-pulse ${!loaded ? '' : 'animate-none'}`} style={style}>
+    <div className="relative w-full h-full">
+      {isLoading && (
+        <div className="absolute inset-0 bg-gray-700 animate-pulse" />
+      )}
       <img
         src={src}
         alt={alt}
-        className={`w-full h-full object-cover absolute inset-0 transition-opacity duration-700 ${loaded ? 'opacity-100' : 'opacity-0'} ${className || ''}`}
-        onLoad={() => setLoaded(true)}
+        className={`w-full h-full object-cover absolute inset-0 transition-opacity duration-700 ${
+          isLoading ? 'opacity-0' : 'opacity-100'
+        } ${className || ''}`}
+        onLoad={() => setIsLoading(false)}
         draggable={false}
       />
     </div>
