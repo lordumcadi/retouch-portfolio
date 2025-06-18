@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 function FadeInImage({ src, alt, className, style }) {
   const [isLoading, setIsLoading] = useState(true);
@@ -101,6 +101,7 @@ export default function Home() {
   const [error, setError] = useState(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [sliderValue, setSliderValue] = useState(50);
+  const topBlockRef = useRef(null);
 
   useEffect(() => {
     const loadImages = async () => {
@@ -122,6 +123,16 @@ export default function Home() {
 
     loadImages();
   }, []);
+
+  const handleThumbnailClick = (index) => {
+    setActiveIndex(index);
+    setSliderValue(50);
+    setTimeout(() => {
+      if (topBlockRef.current) {
+        topBlockRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 50);
+  };
 
   if (loading) {
     return (
@@ -146,7 +157,7 @@ export default function Home() {
         <p className="text-xl text-gray-400 text-center mb-12">Сравните фотографии до и после обработки</p>
         
         {/* Активный блок сравнения */}
-        <div className="max-w-2xl mx-auto mb-16">
+        <div className="max-w-2xl mx-auto mb-16" ref={topBlockRef}>
           <div className="bg-gray-800 rounded-2xl shadow-2xl overflow-hidden">
             <ComparisonSlider
               pair={images[activeIndex]}
@@ -163,10 +174,7 @@ export default function Home() {
               key={pair.folder}
               pair={pair}
               isActive={index === activeIndex}
-              onClick={() => {
-                setActiveIndex(index);
-                setSliderValue(50);
-              }}
+              onClick={() => handleThumbnailClick(index)}
             />
           ))}
         </div>
