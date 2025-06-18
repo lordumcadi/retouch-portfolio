@@ -84,7 +84,7 @@ function Thumbnail({ pair, isActive, onClick }) {
       onClick={onClick}
     >
       <FadeInImage
-        src={pair.after}
+        src={pair.before}
         alt={`Фото ${pair.folder}`}
         className="rounded-lg"
       />
