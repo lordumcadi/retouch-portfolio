@@ -1,6 +1,22 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
+
+function FadeInImage({ src, alt, className, style }) {
+  const [loaded, setLoaded] = useState(false);
+
+  return (
+    <div className={`w-full h-full bg-gray-700 animate-pulse ${!loaded ? '' : 'animate-none'}`} style={style}>
+      <img
+        src={src}
+        alt={alt}
+        className={`w-full h-full object-cover absolute inset-0 transition-opacity duration-700 ${loaded ? 'opacity-100' : 'opacity-0'} ${className || ''}`}
+        onLoad={() => setLoaded(true)}
+        draggable={false}
+      />
+    </div>
+  );
+}
 
 export default function Home() {
   const [images, setImages] = useState([]);
@@ -68,10 +84,10 @@ export default function Home() {
             <div key={index} className="bg-gray-800 rounded-2xl shadow-2xl overflow-hidden transform hover:scale-[1.02] transition-transform duration-300">
               <div className="relative aspect-[3/4]">
                 {/* Фоновое изображение (после) */}
-                <img
+                <FadeInImage
                   src={pair.after}
                   alt="После ретуши"
-                  className="absolute inset-0 w-full h-full object-cover"
+                  className="z-0"
                 />
                 {/* Переднее изображение (до) с градиентом прозрачности */}
                 <div 
@@ -81,10 +97,10 @@ export default function Home() {
                     WebkitMaskImage: `linear-gradient(to right, transparent ${activeSliders[index]}%, black ${activeSliders[index]}%)`
                   }}
                 >
-                  <img
+                  <FadeInImage
                     src={pair.before}
                     alt="До ретуши"
-                    className="absolute inset-0 w-full h-full object-cover"
+                    className="z-10"
                   />
                 </div>
                 {/* Линия разделения */}
